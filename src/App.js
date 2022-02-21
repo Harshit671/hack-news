@@ -1,41 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import Search from './components/Search'
 import './App.css'
-import CardGrid from './components/CardGrid'
 import { Route, Routes } from 'react-router-dom'
-import CardDetails from './components/CardDetails'
+import Register from './components/Register'
+import Login from './components/Login'
+import { useSelector } from 'react-redux'
 import Home from './components/Home'
 
 const App = () => {
-  const [items, setItems] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [query, setQuery] = useState('')
-  
-
-  useEffect(() => {
-    const fetchItems = async () => {
-      setIsLoading(true)
-      const result = await axios(
-        `http://hn.algolia.com/api/v1/search?query=${query}`
-      )
-
-      console.log(result.data.hits)
-
-      setItems(result.data.hits)
-      setIsLoading(false)
-    }
-
-    fetchItems()
-  }, [query])
-
+  const { user } = useSelector(state => state);
+  console.log(user);
   return (
     <>
-      
-       <Routes >
-        <Route path="/" element={<Home items={items} isLoading={isLoading} setQuery={setQuery} />}/>
-        <Route exact path="/item/:id" element={<CardDetails />} />
-       </Routes>
+
+     
+        {
+          user == null ? (
+            <Routes>
+              <Route path="/" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+          </Routes>
+          )
+            : (
+            <Routes>
+              <Route path="/" element={<Home />} />
+            </Routes>
+            )
+        }
     </>
   )
 }
